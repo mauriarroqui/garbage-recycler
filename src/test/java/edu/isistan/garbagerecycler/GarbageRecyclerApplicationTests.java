@@ -1,5 +1,8 @@
 package edu.isistan.garbagerecycler;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.GeneratedValue;
@@ -24,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.isistan.garbagerecycler.model.Address;
 import edu.isistan.garbagerecycler.model.User;
+import edu.isistan.garbagerecycler.model.UserRecycling;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -60,14 +64,7 @@ public class GarbageRecyclerApplicationTests {
 	    _address.setStreetAddress(streetAddress);
 	    _address.setZipCode(zipCode);
 	    
-//	    String address = "{\"department\": \"" + department
-//				+ "\", \"streetAddress\":\"" + streetAddress + "\""
-//				+ "\", \"city\":\"" + city + "\""
-//				+ "\", \"state\":\"" + state + "\""
-//				+ "\", \"zipCode\":\"" + zipCode + "\""
-//				+ "\", \"number\":\"" + number + "\""
-//						+ "}";
-		String firstName = "Mauricio";
+	    String firstName = "Mauricio";
 		String lastName= "Arroqui";
 		String mail= "marroqui@exa.unicen.edu.ar";
 		String username="marroqui";
@@ -83,26 +80,41 @@ public class GarbageRecyclerApplicationTests {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<User> userhttpentity = new HttpEntity<User>(_user, headers);
 	
-		
-//		HttpEntity<Object> user = getHttpEntity("{\"address\": \"" + address
-//				+ "\", \"firstName\":\"" + firstName + "\""
-//				+ "\", \"lastName\":\"" +lastName + "\""
-//				+ "\", \"mail\":\"" + mail + "\""
-//				+ "\", \"username\":\"" + username + "\""
-//						+ "}");
-	    
+			    
 		ResponseEntity<User> response = template.postForEntity("/api/users", userhttpentity, User.class);
 		Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		User u = response.getBody();
 		Assert.assertNotNull(u);
+			
+	}
+	
+	@Test 
+	public void testAddRecyclingToUser() {
+		
+		UserRecycling ur = new UserRecycling();
+		ur.setBottles(1);
+		ur.setCans(2);
+		ur.setDate(LocalDate.now());
+		ur.setGlass(3);
+		ur.setPaperboard(4);
+		ur.setTetrabriks(5);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<UserRecycling> httpentity = new HttpEntity<UserRecycling>(ur, headers);
+
+		String username = "cmateo";
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("username", username);
+		
+		ResponseEntity<UserRecycling> response = template.postForEntity("/api/users/{username}/recycling/", httpentity, UserRecycling.class,params);
+		UserRecycling ur_response = response.getBody();
+		Assert.assertNotNull(ur_response);
+		Assert.assertEquals(ur_response.getUser().getUsername(), username);
 		
 		
 	}
 	
-	private HttpEntity<Object> getHttpEntity(Object body) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		return new HttpEntity<Object>(body, headers);
-	}
-
+	
+	
 }

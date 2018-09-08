@@ -54,6 +54,7 @@ public class UserController {
 		if(user == null) {
 			throw new UserNotFoundException();
 		}
+		userRecycling.setUser(user);
 		UserRecycling newUserRecycling = userRecyclingService.save(userRecycling);
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()

@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ErrorResponse handlePanelNotFoundException(final UserNotFoundException ex) {
 		LOG.error("User not found thrown: ", ex);
-		return new ErrorResponse("PANEL_NOT_FOUND", ex.getMessage());
+		return new ErrorResponse("USER_NOT_FOUND", ex.getMessage());
 	}
 
 	public static class ErrorResponse {

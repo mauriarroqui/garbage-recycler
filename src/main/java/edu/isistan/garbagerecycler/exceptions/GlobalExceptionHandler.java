@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(UserNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
-	public ErrorResponse handlePanelNotFoundException(final UserNotFoundException ex) {
+	public ErrorResponse handleUserNotFoundException(final UserNotFoundException ex) {
 		LOG.error("User not found thrown: ", ex);
 		return new ErrorResponse("USER_NOT_FOUND", ex.getMessage());
 	}
